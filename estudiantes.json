@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "nombre": "Juan Pablo",
+    "acudiente": "Mamá",
+    "telefono": "573225940033",
+    "barrio": "El Turbai",
+    "ruta": "Bachillerato 1",
+    "subruta": "Mañana",
+    "ordenRecogida": 1,
+    "ordenDejada": 3,
+    "lat": 4.5655,
+    "lng": -75.7488,
+    "nota": "Avisar con tiempo."
+  },
+  {
+    "id": 2,
+    "nombre": "Nicolás Bedoya",
+    "acudiente": "Mamá",
+    "telefono": "573128840559",
+    "barrio": "El Turbai",
+    "ruta": "Bachillerato 1",
+    "subruta": "Mañana",
+    "ordenRecogida": 2,
+    "ordenDejada": 2,
+    "lat": 4.5658,
+    "lng": -75.7492,
+    "nota": "Segundo contacto: 573167200858"
+  },
+  {
+    "id": 3,
+    "nombre": "Dilan Gañán",
+    "acudiente": "Abuela Teresa",
+    "telefono": "573206342481",
+    "barrio": "El Turbai",
+    "ruta": "Bachillerato 1",
+    "subruta": "Mañana",
+    "ordenRecogida": 3,
+    "ordenDejada": 1,
+    "lat": 4.5661,
+    "lng": -75.7496,
+    "nota": "Llamar si la puerta está cerrada."
+  },
+  {
+    "id": 4,
+    "nombre": "Mateo López",
+    "acudiente": "Mamá",
+    "telefono": "573010000000",
+    "barrio": "Centro",
+    "ruta": "Primaria",
+    "subruta": "Mañana",
+    "ordenRecogida": 1,
+    "ordenDejada": 2,
+    "lat": 4.5669,
+    "lng": -75.7512,
+    "nota": ""
+  },
+  {
+    "id": 5,
+    "nombre": "Sofía Ramírez",
+    "acudiente": "Papá",
+    "telefono": "573010000001",
+    "barrio": "Villa Carolina",
+    "ruta": "Primaria",
+    "subruta": "Mañana",
+    "ordenRecogida": 2,
+    "ordenDejada": 1,
+    "lat": 4.5691,
+    "lng": -75.7541,
+    "nota": ""
+  }
+]

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ruta Escolar Montenegro</title>
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Ruta Escolar Montenegro</h1>
+      <p>Panel móvil con orden de recogida, IA y mensajes</p>
+    </div>
+    <button class="chip" id="btnGuardarTodo">Guardar</button>
+  </header>
+
+  <main class="app">
+    <section class="card hero">
+      <div class="hero-grid">
+        <div>
+          <label>Ruta activa</label>
+          <select id="rutaActiva"></select>
+        </div>
+        <div>
+          <label>Subruta</label>
+          <select id="subrutaActiva">
+            <option value="Todas">Todas</option>
+            <option value="Mañana">Mañana</option>
+            <option value="Tarde">Tarde</option>
+          </select>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="btn primary" id="btnIniciar">Iniciar ruta</button>
+        <button class="btn" id="btnGps">Activar GPS</button>
+        <button class="btn accent" id="btnSubio">Estudiante subió</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>Actual</span><strong id="actualNombre">Sin iniciar</strong></div>
+        <div class="stat"><span>Barrio</span><strong id="actualBarrio">-</strong></div>
+        <div class="stat"><span>Pendientes</span><strong id="pendientes">0</strong></div>
+        <div class="stat"><span>Estado GPS</span><strong id="gpsEstado">Inactivo</strong></div>
+      </div>
+    </section>
+
+    <section class="card section-tabs">
+      <div class="tabs">
+        <button class="tab active" data-tab="orden">Orden</button>
+        <button class="tab" data-tab="mensajes">Mensajes</button>
+        <button class="tab" data-tab="ia">IA</button>
+        <button class="tab" data-tab="estudiantes">Estudiantes</button>
+        <button class="tab" data-tab="config">Config</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-orden">
+        <div class="list-head">
+          <h2>Orden de recogida</h2>
+          <button class="btn sm" id="btnVerDejada">Ver dejada</button>
+        </div>
+        <div id="listaOrden" class="list"></div>
+      </div>
+
+      <div class="tab-panel" id="tab-mensajes">
+        <div class="hero-grid">
+          <div>
+            <label>Tipo de mensaje</label>
+            <select id="tipoMensaje">
+              <option value="alistamiento">Ruta alistándose</option>
+              <option value="ingreso_barrio">Ingreso al barrio</option>
+              <option value="cerca">Ruta cerca</option>
+              <option value="retraso">Retraso</option>
+              <option value="subio">Estudiante subió</option>
+              <option value="llegada_colegio">Llegada al colegio</option>
+              <option value="entrega">Entrega en casa</option>
+              <option value="personalizado">Personalizado</option>
+            </select>
+          </div>
+          <div>
+            <label>Tono</label>
+            <select id="tonoMensaje">
+              <option value="cercano">Cercano</option>
+              <option value="formal">Formal</option>
+              <option value="breve">Breve</option>
+            </select>
+          </div>
+        </div>
+        <label>Mensaje personalizado / nota</label>
+        <textarea id="notaMensaje" rows="3" placeholder="Ejemplo: la ruta va con 8 minutos de retraso"></textarea>
+        <div class="hero-actions">
+          <button class="btn primary" id="btnVistaPrevia">Vista previa actual</button>
+          <button class="btn" id="btnRutaMasivo">Enviar a toda la ruta</button>
+          <button class="btn accent" id="btnBarrioMasivo">Avisar barrio actual</button>
+        </div>
+        <div class="preview" id="previewMensaje">Aquí verás el mensaje.</div>
+        <div class="hero-actions">
+          <button class="btn success" id="btnEnviarActual">Enviar al estudiante actual</button>
+          <button class="btn warn" id="btnLlegadaColegio">Llegada al colegio</button>
+        </div>
+        <div class="queue-box">
+          <h3>Bitácora / cola</h3>
+          <div id="bitacora" class="bitacora"></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-ia">
+        <h2>Asistente IA local</h2>
+        <label>Pregunta</label>
+        <textarea id="preguntaIA" rows="3" placeholder="Ejemplo: mejora el mensaje de alistamiento para Bachillerato 1"></textarea>
+        <div class="hero-actions">
+          <button class="btn primary" id="btnPreguntarIA">Preguntar</button>
+          <button class="btn" id="btnSugerirIA">Sugerir mensaje del actual</button>
+        </div>
+        <div id="respuestaIA" class="preview"></div>
+      </div>
+
+      <div class="tab-panel" id="tab-estudiantes">
+        <div class="list-head">
+          <h2>Estudiantes</h2>
+          <button class="btn sm" id="btnNuevo">Nuevo</button>
+        </div>
+        <form id="formEstudiante" class="form-grid">
+          <input type="hidden" id="estId" />
+          <input id="estNombre" placeholder="Nombre" required />
+          <input id="estAcudiente" placeholder="Acudiente" required />
+          <input id="estTelefono" placeholder="Celular 57..." required />
+          <input id="estBarrio" placeholder="Barrio" list="barriosList" required />
+          <datalist id="barriosList"></datalist>
+          <select id="estRuta"></select>
+          <select id="estSubruta">
+            <option value="Mañana">Mañana</option>
+            <option value="Tarde">Tarde</option>
+          </select>
+          <input id="estOrdenRecogida" type="number" min="1" placeholder="Orden recogida" required />
+          <input id="estOrdenDejada" type="number" min="1" placeholder="Orden dejada" required />
+          <input id="estLat" placeholder="Latitud" />
+          <input id="estLng" placeholder="Longitud" />
+          <textarea id="estNota" rows="2" placeholder="Nota personalizada"></textarea>
+          <div class="hero-actions form-actions">
+            <button class="btn success" type="submit">Guardar estudiante</button>
+            <button class="btn danger" type="button" id="btnEliminar">Eliminar</button>
+          </div>
+        </form>
+        <div id="listaEstudiantes" class="list compact"></div>
+      </div>
+
+      <div class="tab-panel" id="tab-config">
+        <div class="hero-grid">
+          <div>
+            <label>Canal de envío</label>
+            <select id="canalEnvio">
+              <option value="demo">Demo</option>
+              <option value="abrir_whatsapp">Abrir WhatsApp</option>
+              <option value="whatsapp_business">WhatsApp Business</option>
+            </select>
+          </div>
+          <div>
+            <label>Radio de aviso (m)</label>
+            <input id="radioAviso" type="number" min="50" value="250" />
+          </div>
+        </div>
+        <label>Backend URL</label>
+        <input id="backendUrl" placeholder="https://tu-worker.workers.dev" />
+        <label>Llave API pública</label>
+        <input id="apiKey" placeholder="API_KEY" />
+        <div class="hero-actions">
+          <button class="btn primary" id="btnGuardarBackend">Guardar backend</button>
+          <button class="btn" id="btnProbarBackend">Probar conexión</button>
+        </div>
+        <div class="stats single">
+          <div class="stat"><span>Backend</span><strong id="backendEstado">Sin probar</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div id="mapa"></div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="ia.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
